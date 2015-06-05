@@ -2,4 +2,11 @@
 <h1>State 1</h1>
 <hr/>
 <a ui-sref="state1.list">Show List</a>
+
+<div>
+    <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
+    <button class='btn btn-default' ng-click="addAlert()">Add Alert</button>
+</div>
+
+
 <div ui-view></div>

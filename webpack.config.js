@@ -6,10 +6,9 @@ module.exports = {
   cache: true,
   entry: {
     app: [
-      "./frontend/app.js",
-      "bootstrap-sass!./bootstrap-sass.config.js"
+      "./frontend/app.js"
     ],
-    vendor: ["angular", "angular-ui-router"]
+    vendor: ["angular", "angular-ui-router", "angular-bootstrap", "jquery", "bootstrap-sass!./bootstrap-sass.config.js"]
   },
   output: {
     path: path.join(__dirname, "backend", "static"),
@@ -20,6 +19,10 @@ module.exports = {
     loaders: [
       {test: /\.css$/, loader: "style!css"},
 
+      // **IMPORTANT** This is needed so that each bootstrap js file required by
+      // bootstrap-webpack has access to the jQuery object
+      {test: /bootstrap.*\.js$/, loader: 'imports?jQuery=jquery'},
+
       // Needed for the css-loader when [bootstrap-webpack](https://github.com/bline/bootstrap-webpack)
       // loads bootstrap's css.
       {test: /\.woff(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&minetype=application/font-woff"},
@@ -27,19 +30,20 @@ module.exports = {
       {test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&minetype=application/octet-stream"},
       {test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: "file"},
       {test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&minetype=image/svg+xml"},
-      {
-        test: /\.html$/,
-        loader: "ngtemplate?relativeTo=" + (path.resolve(__dirname, './frontend')) + "/!html",
-        exclude: /node_modules/
-      },
-      {test: /\.js$/, loader: 'ng-annotate', exclude: /node_modules/},
+      //{
+      //  test: /\.tmpl$/,
+      //  loader: "ngtemplate?relativeTo=" + (path.resolve(__dirname, './frontend')) + "/!html",
+      //  exclude: /node_modules/
+      //},
+      {test: /\.html$/, loader: 'raw', exclude: /node_modules/},
+      {test: /\.js$/, loader: 'ng-annotate!babel', exclude: /node_modules/},
+      {test: /\.scss$/, loader: 'style!css!sass', exclude: /node_modules/},
     ]
   },
   plugins: [
     new webpack.optimize.CommonsChunkPlugin(/* chunkName= */"vendor", /* filename= */"vendor.bundle.js"),
     new webpack.DefinePlugin({
-      __DEV__: JSON.stringify(JSON.parse(process.env.BUILD_DEV || 'true')),
-      __PRERELEASE__: JSON.stringify(JSON.parse(process.env.BUILD_PRERELEASE || 'false'))
+      __DEV__: JSON.stringify(JSON.stringify(process.env.NODE_ENV))
     }),
     new ExtractTextPlugin("style.css")
   ],

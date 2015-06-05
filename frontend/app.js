@@ -1,17 +1,20 @@
-var angular =  require("angular");
+let angular = require("angular");
+let bootstrap = require("angular-bootstrap");
+let app = angular.module('app', [require("angular-ui-router"), 'ui.bootstrap']);
 
-module.exports = app = angular.module('app', [require("angular-ui-router")]);
+module.exports = app;
+
+if (!__DEV__) {
+  console.info("Development Mode !");
+}
+
+require("./directives")(app);
 
 angular.element(document).ready(function () {
   angular.bootstrap(document, [app.name], {
     //strictDi: true
   });
 });
-
-require("./partials/state1.html");
-require("./partials/state1.list.html");
-require("./partials/state2.html");
-require("./partials/state2.list.html");
 
 app.config(function ($stateProvider, $urlRouterProvider) {
   //
@@ -22,24 +25,35 @@ app.config(function ($stateProvider, $urlRouterProvider) {
   $stateProvider
     .state('state1', {
       url: "/state1",
-      templateUrl: "partials/state1.html"
+      template: require("./partials/state1.html"),
+      controller: function ($scope) {
+        $scope.alerts = [
+          {type: 'danger', msg: 'Oh snap! Change a few things up and try submitting again.'},
+          {type: 'success', msg: 'Well done! You successfully read this important alert message.'}
+        ];
+        $scope.addAlert = function () {
+          $scope.alerts.push({msg: 'Another alert!'});
+        };
+
+        $scope.closeAlert = function (index) {
+          $scope.alerts.splice(index, 1);
+        };
+      }
     })
     .state('state1.list', {
       url: "/list",
-      templateUrl: "partials/state1.list.html",
+      template: require("./partials/state1.list.html"),
       controller: function ($scope) {
-        $scope.items = ["A", "List", "Of", "Items"];
+        $scope.items = ["A", "List", "Of", "Items", __DEV__];
       }
     })
     .state('state2', {
       url: "/state2",
-      templateUrl: "partials/state2.html"
+      template: require("./partials/state2.html")
     })
     .state('state2.list', {
       url: "/list",
-      templateUrl: "partials/state2.list.html",
-      controller: function ($scope) {
-        $scope.things = ["A", "Set", "Of", "Things"];
-      }
+      template: require("./partials/state2.list.html"),
+      controller: require("./controller/state2.js")
     });
 });

@@ -4,22 +4,21 @@
     <meta charset="UTF-8">
     <title>Document</title>
     <link href="/static/style.css" rel="stylesheet" type="text/css">
+    <!-- IGB START -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/es5-shim/3.4.0/es5-shim.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/es5-shim/3.4.0/es5-sham.js"></script>
+    <!-- IGB ENDE -->
+    <script src="/static/vendor.bundle.js"></script>
+    <script src="/static/bundle.js"></script>
 </head>
 <body>
 
-<p>Angular is working:{{ '{{' }}1 + 1 === 2}}</p>
+<navbar></navbar>
+<div class="container">
+    <p>Angular is working:{{ '{{' }}1 + 1 === 2}}</p>
 
-<div ui-view></div>
-<!-- We'll also add some navigation: -->
-<a ui-sref="state1">State 1</a>
-<a ui-sref="state2">State 2</a>
+    <div ui-view></div>
+</div>
 
-<!-- IGB START -->
-<script src="//cdnjs.cloudflare.com/ajax/libs/es5-shim/3.4.0/es5-shim.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/es5-shim/3.4.0/es5-sham.js"></script>
-<!-- IGB ENDE -->
-
-<script src="/static/vendor.bundle.js"></script>
-<script src="/static/bundle.js"></script>
 </body>
 </html>

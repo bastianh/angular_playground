@@ -17,9 +17,9 @@ module.exports = {
 
   // Use bootstrapCustomizations to utilize other sass variables defined in preBootstrapCustomizations or the
   // _variables.scss file. This is useful to set one customization value based on another value.
-  // bootstrapCustomizations: "./_bootstrap-customizations.scss",
+  bootstrapCustomizations: "./frontend/styles/_bootstrap-customizations.scss",
 
-  // mainSass: "./_main.scss",
+  mainSass: "./frontend/styles/_main.scss",
 
   // Default for the style loading
   //styleLoader: "style-loader!css-loader!sass-loader",
@@ -32,7 +32,7 @@ module.exports = {
   //   styleLoader: ExtractTextPlugin.extract("style-loader", "css-loader!sass?outputStyle=expanded"),
 
   scripts: {
-/*    'transition': true,
+    'transition': true,
     'alert': true,
     'button': true,
     'carousel': true,
@@ -43,13 +43,13 @@ module.exports = {
     'popover': true,
     'scrollspy': true,
     'tab': true,
-    'affix': true*/
+    'affix': true
   },
   styles: {
     "mixins": true,
 
     "normalize": true,
-    /*
+
     "print": true,
 
     "scaffolding": true,
@@ -58,6 +58,7 @@ module.exports = {
     "grid": true,
     "tables": true,
     "forms": true,
+
     "buttons": true,
 
     "component-animations": true,
@@ -74,9 +75,9 @@ module.exports = {
     "badges": true,
     "jumbotron": true,
     "thumbnails": true,
-    */
+
     "alerts": true,
-    /*
+
     "progress-bars": true,
     "media": true,
     "list-group": true,
@@ -91,7 +92,7 @@ module.exports = {
 
     "utilities": true,
     "responsive-utilities": true
-*/
+
   }
 };
 
