@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="app">
 <head>
     <meta charset="UTF-8">
     <title>Document</title>
@@ -12,13 +12,11 @@
     <script src="/static/bundle.js"></script>
 </head>
 <body>
-
 <navbar></navbar>
 <div class="container">
-    <p>Angular is working:{{ '{{' }}1 + 1 === 2}}</p>
-
     <div ui-view></div>
 </div>
-
+<hr/>
+{{ session.user }}
 </body>
 </html>

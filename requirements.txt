@@ -1,1 +1,6 @@
 flask
+flask-oauthlib
+flask-login
+flask-sqlalchemy
+flask-migrate
+flask-script

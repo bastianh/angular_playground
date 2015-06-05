@@ -50,6 +50,7 @@ module.exports = {
   devServer: {
     contentBase: "static/",
     noInfo: false,
+    host: "0.0.0.0",
     //hot: true,
     //inline: true,
     proxy: {
