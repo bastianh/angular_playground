@@ -15,6 +15,7 @@
         <li ui-sref-active="active"><a ui-sref="{{ ::obj.state }}">{{ ::obj.title }}</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
+        <li><p class="navbar-text navbar-right" style="padding-right: 10px"><span ng-style="vm.connectStyle" class="glyphicon glyphicon-link" aria-hidden="true"></span></p></li>
         <li><p class="navbar-text navbar-right"><img src="//image.eveonline.com/Character/{{ ::vm.user.character_id }}_32.jpg" width="20" height="20" alt=""/> {{ ::vm.user.character_name }} [<a href="/logout" class="navbar-link">Logout</a>]</p></li>
       </ul>
     </div>

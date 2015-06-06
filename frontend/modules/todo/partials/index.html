@@ -1,0 +1,32 @@
+<h2>TODOS</h2>
+
+<table class="table table-striped">
+  <thead>
+  <tr>
+    <th>Id</th>
+    <th>Task</th>
+    <th class="text-right">Buttons</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr ng-repeat="row in vm.todos track by row.id">
+    <td>{{ row.creator.character_name }}</td>
+    <td>{{ row.task }}</td>
+    <td class="text-right">
+      <button class='btn btn-default' ng-click="vm.remove_todo(row)">Remove</button>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2">
+      <input ng-model="vm.newtask" placeholder="neuer task..." style="width: 100%" type="text" name="task"/>
+    </td>
+    <td class="text-right">
+      <button class='btn btn-default' ng-click="vm.add_todo()">Add</button>
+    </td>
+  </tr>
+  </tbody>
+</table>
+
+
+{{ vm.todos }}
+

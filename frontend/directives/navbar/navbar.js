@@ -3,12 +3,12 @@ module.exports = function (ngModule) {
   ngModule.provider('navbarData', function () {
     var barItems = [];
     return {
-      addMenu: function(data) {
+      addMenu: function (data) {
         barItems.push(data);
       },
       $get: function () {
         return {
-          barItems : barItems
+          barItems: barItems
         }
       }
     }
@@ -20,10 +20,25 @@ module.exports = function (ngModule) {
       scope: {},
       template: require("./navbar.html"),
       controllerAs: 'vm',
-      controller: function ($scope, user, navbarData) {
+      controller: function ($scope, user, navbarData, socket) {
+        socket.setupSocket();
         var vm = this;
+        vm.connectStyle = {};
         vm.barItems = navbarData.barItems;
         vm.user = user;
+        $scope.$on('socket-status', function (event, args) {
+          switch (args.status) {
+            case 'connecting':
+              vm.connectStyle = {color: 'orange'};
+              break;
+            case 'open':
+              vm.connectStyle = {color: 'green'};
+              break;
+            case 'closed':
+              vm.connectStyle = {color: 'red'};
+              break;
+          }
+        });
       }
     }
   })

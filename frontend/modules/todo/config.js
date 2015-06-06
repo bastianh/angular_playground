@@ -11,7 +11,9 @@ module.exports = function (ngModule) {
     $stateProvider
       .state('todo', {
         url: "/todo",
-        template: "<h1>TODO</h1>"
+        template: require("./partials/index.html"),
+        controllerAs: "vm",
+        controller: 'todoListController'
       })
   });
 

@@ -8,7 +8,7 @@ module.exports = {
     app: [
       "./frontend/app.js"
     ],
-    vendor: ["angular", "angular-ui-router", "angular-bootstrap", "jquery", "bootstrap-sass!./bootstrap-sass.config.js"]
+    vendor: ["angular", "angular-ui-router", "angular-bootstrap", "jquery", "lodash", "restangular", "bootstrap-sass!./bootstrap-sass.config.js"]
   },
   output: {
     path: path.join(__dirname, "backend", "static"),
@@ -22,7 +22,8 @@ module.exports = {
       // **IMPORTANT** This is needed so that each bootstrap js file required by
       // bootstrap-webpack has access to the jQuery object
       {test: /bootstrap.*\.js$/, loader: 'imports?jQuery=jquery'},
-
+      // restangular braucht lodash injected
+      {test: /restangular\.min\.js$/, loader: 'imports?_=lodash'},
       // Needed for the css-loader when [bootstrap-webpack](https://github.com/bline/bootstrap-webpack)
       // loads bootstrap's css.
       {test: /\.woff(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&minetype=application/font-woff"},

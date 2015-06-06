@@ -5,6 +5,7 @@ from sqlalchemy import event
 from backend.signals import on_init_app
 from backend.utils.dogpile_cache import rediscache
 from marshmallow_sqlalchemy import ModelSchema, SchemaOpts
+from flask import abort
 
 db = SQLAlchemy()
 Base = declarative_base()
@@ -29,6 +30,15 @@ class CRUDMixin(object):
         if not id:
             return
         return db.session.query(cls).get(id)
+
+    @classmethod
+    def get_or_404(cls, id):
+        if not id:
+            abort(404)
+        obj = db.session.query(cls).get(id)
+        if not obj:
+            abort(404)
+        return obj
 
     @classmethod
     def get_or_create(cls,commit=True, create_method_kwargs=None, **kwargs):
