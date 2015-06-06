@@ -4,11 +4,15 @@ let app = angular.module('app', [require("angular-ui-router"), 'ui.bootstrap']);
 
 module.exports = app;
 
-if (!__DEV__) {
-  console.info("Development Mode!");
+//noinspection JSUnresolvedVariable
+if (__DEV__) {
+  app.config(['$compileProvider', function ($compileProvider) {
+    $compileProvider.debugInfoEnabled(false);
+  }]);
+} else {
+  console.warn("Development Mode!");
 }
 
 require("./services")(app);
 require("./directives")(app);
 require("./modules")(app);
-

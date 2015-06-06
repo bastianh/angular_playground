@@ -19,7 +19,6 @@ def create_app():
         user = None
         if current_user.is_authenticated():
             user = UserSchema(exclude=('email','provider_id','provider_name')).dump(current_user).data
-            user["te'st"] = 'hey"ho\'sd'
         return render_template("index.html", user=user)
 
     return app
