@@ -4,3 +4,11 @@ flask-login
 flask-sqlalchemy
 flask-migrate
 flask-script
+sqlalchemy-utils
+blinker
+redis
+hiredis
+dogpile.cache
+marshmallow-sqlalchemy
+
+psycopg2

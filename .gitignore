@@ -20,3 +20,4 @@ pip-delete-this-directory.txt
 
 node_modules
 backend/static/
+backend/local_settings.py
