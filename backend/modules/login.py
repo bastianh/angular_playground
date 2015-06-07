@@ -1,11 +1,18 @@
+from collections import OrderedDict
+import string
+import random
+import jws
 from flask import session, url_for, request, jsonify, redirect, render_template
 from flask.ext.login import LoginManager, login_required, current_user
 from flask.ext.oauthlib.client import OAuth, OAuthException
+import time
+from backend import settings
 
-from backend.database import db
+from backend.utils.database import db
 from backend.models.user import User, UserSchema
 
 from backend.signals import on_init_app
+from backend.utils.websignature import sign_dict
 
 oauth = OAuth()
 login_manager = LoginManager()
@@ -40,9 +47,9 @@ def init_app(app):
     def index():
         user = None
         if current_user.is_authenticated():
-            user = UserSchema(exclude=('email', 'provider_id', 'provider_name')).dump(current_user).data
+            user = UserSchema(only=('character_id','character_name','id')).dump(current_user).data
+            user = sign_dict(user, settings.SECRET_KEY)
         return render_template("index.html", user=user)
-
 
     @app.route('/login/twobad')
     def twobad_login_redirect():

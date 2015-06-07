@@ -8,7 +8,7 @@ from flask.ext.login import UserMixin, login_user, logout_user
 from sqlalchemy.dialects import postgres
 from sqlalchemy_utils import Timestamp
 
-from backend.database import Base, CRUDMixinCached, BaseSchema
+from backend.utils.database import Base, CRUDMixinCached, BaseSchema
 
 
 class User(Base, CRUDMixinCached, Timestamp, UserMixin):

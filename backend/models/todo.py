@@ -4,8 +4,7 @@ from marshmallow import fields
 from sqlalchemy.databases import postgres
 from sqlalchemy.orm import relationship
 from sqlalchemy_utils import Timestamp
-from backend.database import Base, BaseSchema, db
-from backend.database import CRUDMixin
+from backend.utils.database import Base, BaseSchema, db, CRUDMixin
 from backend.models.user import User, UserSchema
 
 

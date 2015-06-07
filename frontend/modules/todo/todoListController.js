@@ -15,11 +15,13 @@ module.exports = function (ngModule) {
       )
     };
 
+    vm.refreshList = () => vm.todos = baseTodo.getList().$object;
+
     vm.add_todo = function () {
-      baseTodo.post({task: vm.newtask}).then(function() {
-        console.log("Object saved OK");
+      baseTodo.post({task: vm.newtask}).then(function(obj) {
+        console.log("Object saved OK", obj);
         vm.newtask="";
-        vm.todos = baseTodo.getList().$object; // vorest laden wir einfach die ganze liste neu...
+        vm.todos.push(obj);
       }, function() {
         console.log("There was an error saving");
       });

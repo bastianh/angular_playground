@@ -11,7 +11,7 @@ module.exports = app;
 require("./services")(app);
 
 app.config(function ($compileProvider, socketProvider) {
-  socketProvider.setUrl('http://192.168.33.12:9999/echo').setReconnect(5000);
+  socketProvider.setUrl('http://192.168.33.12:9999/sockjs').setReconnect(5000);
   if (__DEV__) {
     // performance schub ;)
     $compileProvider.debugInfoEnabled(false);

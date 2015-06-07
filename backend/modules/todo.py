@@ -5,7 +5,7 @@ from flask.ext.login import current_user, login_required
 from sqlalchemy.orm import joinedload
 from flask.ext.classy import FlaskView
 
-from backend.database import db
+from backend.utils.database import db
 from backend.signals import on_init_app
 from backend.models.todo import TodoModel, TodoSchema
 
@@ -13,7 +13,7 @@ todo_schema = TodoSchema()
 
 
 def json_response(data=None, **kwargs):
-    if not data:
+    if data is None:
         data = {}
     if isinstance(data, dict) and len(kwargs):
         data.update(kwargs)
@@ -29,11 +29,7 @@ def get_response_json():
 
 # noinspection PyMethodMayBeStatic
 class TodosView(FlaskView):
-    decoratxors = [login_required]
-
-    def after_request(self, name, response):
-        logging.warning("test %s", name)
-        return response
+    decorators = [login_required]
 
     def get(self):
         todos = db.session.query(TodoModel).options(joinedload(TodoModel.creator)).all()

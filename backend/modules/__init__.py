@@ -1,1 +1,1 @@
-from backend.modules import login, todo
+from backend.modules import login, todo, chat

@@ -8,16 +8,9 @@ module.exports = function (ngModule) {
     $stateProvider
       .state('index', {
         url: "/",
-        template: "<h1>Index</h1> <div>{{ hi }}</div>",
-        controller: function ($scope, socket) {
-          $scope.hi = socket.status();
-          console.log("xxx", $scope.hi);
-
-          $scope.$on('socket-status', function (event, args) {
-            $scope.hi = args.status;
-          });
-
-        }
+        template: require("./partials/index.html"),
+        controllerAs: "vm",
+        controller: 'chatTestController'
       })
   });
 

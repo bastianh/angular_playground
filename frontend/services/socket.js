@@ -1,6 +1,6 @@
-module.exports = function (ngModule) {
+let SockJS = require("sockjs-client");
 
-  ngModule.value('SockJS', require("sockjs-client"));
+module.exports = function (ngModule) {
   ngModule.provider('socket', function () {
     let provider = this;
     provider.setUrl = function (url) {
@@ -12,14 +12,14 @@ module.exports = function (ngModule) {
       return provider;
     };
 
-    provider.$get = ["SockJS", "$timeout", "$rootScope", function (SockJS, $timeout, $rootScope) {
+    provider.$get = ["$timeout", "$rootScope", function ($timeout, $rootScope) {
       var self = this;
       var socket;
       var reconnect_promise;
 
-      var setStatus = function(newStatus) {
+      var setStatus = function (newStatus) {
         self.status = newStatus;
-        $rootScope.$broadcast('socket-status', {status: newStatus});
+        $rootScope.$emit('socket-status', {status: newStatus});
       };
 
       var asyncAngularify = function (socket, callback) {
@@ -29,6 +29,15 @@ module.exports = function (ngModule) {
             callback.apply(socket, args);
           }, 0);
         } : angular.noop;
+      };
+
+      self.sendMessage = function(message) {
+        if (self.status != 'open') {
+          console.error("wrong socket status - todo: queue messages"); // TODO: queue messages
+          return false;
+        }
+        socket.send(JSON.stringify(message));
+        return true;
       };
 
       self.setupSocket = function () {
@@ -44,7 +53,7 @@ module.exports = function (ngModule) {
         });
         socket.onmessage = asyncAngularify(socket, function (e) {
           console.log('message', e.data);
-          $rootScope.$broadcast('socket-message', {data: e.data});
+          $rootScope.$emit('socket-message',JSON.parse(e.data));
         });
         socket.onclose = asyncAngularify(socket, function () {
           setStatus('closed');
@@ -57,9 +66,9 @@ module.exports = function (ngModule) {
       };
 
       return {
-
         status: () => self.status || "closed!",
-        setupSocket: self.setupSocket
+        setupSocket: self.setupSocket,
+        sendMessage: self.sendMessage
       }
     }];
   });
