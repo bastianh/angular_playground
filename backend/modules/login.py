@@ -1,3 +1,4 @@
+import random
 from flask import session, url_for, request, jsonify, redirect, render_template
 from flask.ext.login import LoginManager, login_required, current_user
 
@@ -42,6 +43,14 @@ def init_app(app):
     oauth.init_app(app)
     login_manager.init_app(app)
 
+    @app.route("/test")
+    def test():
+        u = User.create(commit=False, provider_id=random.random()*1000, provider_name='test')
+        u.character_id=random.random()*1000
+        u.character_name="asd"
+        u.save()
+        return "ji"
+
     @app.route("/")
     def index():
         user = None
@@ -75,6 +84,7 @@ def init_app(app):
                 user = User.create(commit=False, provider_id=user_data['user_id'], provider_name='2bad')
             user.character_id = user_data["character_id"]
             user.character_name = user_data["username"]
+            user.save()
             user.login()
             return redirect(url_for(".index"))
         return jsonify(me.data)
@@ -107,6 +117,7 @@ def init_app(app):
             user = User.create(commit=False, provider_id=provider_id, provider_name='eve')
         user.character_id = user_data["CharacterID"]
         user.character_name = user_data["CharacterName"]
+        user.save()
         user.login()
         return redirect(url_for(".index"))
 
