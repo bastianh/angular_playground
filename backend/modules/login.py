@@ -98,8 +98,8 @@ def init_app(app):
 
         me = evesso.get("verify")
         user_data = me.data
-        
-        provider_id = "%r%r" % (user_data['CharacterID'], user_data['CharacterOwnerHash'])
+
+        provider_id = int(user_data['CharacterID']) #  FIXME: TODO: sollte kein int sein  "%r%r" % (user_data['CharacterID'], user_data['CharacterOwnerHash'])
         user = db.session.query(User).filter_by(provider_id=provider_id).filter_by(
             provider_name='eve').first()
         if not user:
