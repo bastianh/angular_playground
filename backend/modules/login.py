@@ -97,8 +97,8 @@ def init_app(app):
         session['evesso_token'] = (resp['access_token'], '')
 
         me = evesso.get("verify")
-
-        user_data = me.data["user"]
+        user_data = me.data
+        
         provider_id = "%r%r" % (user_data['CharacterID'], user_data['CharacterOwnerHash'])
         user = db.session.query(User).filter_by(provider_id=provider_id).filter_by(
             provider_name='eve').first()
