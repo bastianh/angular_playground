@@ -83,7 +83,7 @@ def init_app(app):
     def evesso_login_redirect():
         return evesso.authorize(callback=url_for('evesso_authorized', _external=True, _scheme="https"))
 
-    @app.route('/callback')
+    @app.route('/login/callback/eve')
     def evesso_authorized():
         resp = evesso.authorized_response()
         if resp is None:
