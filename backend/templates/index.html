@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="app">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>Document</title>
@@ -17,12 +17,14 @@
 <body>
 {% if current_user.is_authenticated() %}
   <navbar></navbar>
-  <div class="container">
-    <div ui-view></div>
-  </div>
+  <div class="container" ui-view></div>
 {% else %}
-  <div style="width:100px; margin:0 auto;">
-    <a class="btn btn-info" style="width: 100%" href="{{ url_for("twobad_login_redirect", back=request.path) }}" role="button">Login</a>
+  <div style="width:200px; margin:0 auto;">
+    <a class="btn btn-info" style="width: 100%" href="{{ url_for("twobad_login_redirect", back=request.path) }}" role="button">Login (Alliance)</a>
+  </div>
+  <br/>
+  <div style="width:200px; margin:0 auto;">
+    <a class="btn btn-info" style="width: 100%" href="{{ url_for("evesso_login_redirect", back=request.path) }}" role="button">Login (EVE-SSO)</a>
   </div>
 {% endif %}
 </body>

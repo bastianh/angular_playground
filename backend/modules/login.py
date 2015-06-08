@@ -1,21 +1,23 @@
-from collections import OrderedDict
-import string
-import random
-import jws
 from flask import session, url_for, request, jsonify, redirect, render_template
 from flask.ext.login import LoginManager, login_required, current_user
-from flask.ext.oauthlib.client import OAuth, OAuthException
-import time
-from backend import settings
 
+from flask.ext.oauthlib.client import OAuth, OAuthException
+
+from backend import settings
 from backend.utils.database import db
 from backend.models.user import User, UserSchema
-
 from backend.signals import on_init_app
 from backend.utils.websignature import sign_dict
 
 oauth = OAuth()
 login_manager = LoginManager()
+
+evesso = oauth.remote_app('evesso',
+                          base_url='https://login.eveonline.com/oauth/',
+                          access_token_url='https://login.eveonline.com/oauth/token',
+                          access_token_method='POST',
+                          authorize_url='https://login.eveonline.com/oauth/authorize',
+                          app_key='EVESSO')
 
 twobad = oauth.remote_app('twobad',
                           request_token_params={'scope': 'skipconfirm'},
@@ -44,7 +46,7 @@ def init_app(app):
     def index():
         user = None
         if current_user.is_authenticated():
-            user = UserSchema(only=('character_id','character_name','id')).dump(current_user).data
+            user = UserSchema(only=('character_id', 'character_name', 'id')).dump(current_user).data
             user = sign_dict(user, settings.SECRET_KEY)
         return render_template("index.html", user=user)
 
@@ -76,6 +78,41 @@ def init_app(app):
             user.login()
             return redirect(url_for(".index"))
         return jsonify(me.data)
+
+    @app.route("/login/evesso")
+    def evesso_login_redirect():
+        return evesso.authorize(callback=url_for('evesso_authorized', _external=True, _scheme="https"))
+
+    @app.route('/callback')
+    def evesso_authorized():
+        resp = evesso.authorized_response()
+        if resp is None:
+            return 'Access denied: reason=%s error=%s' % (
+                request.args['error_reason'],
+                request.args['error_description']
+            )
+        if isinstance(resp, Exception):
+            return 'Access denied: error=%s' % str(resp)
+
+        session['evesso_token'] = (resp['access_token'], '')
+
+        me = evesso.get("verify")
+
+        user_data = me.data["user"]
+        provider_id = "%r%r" % (user_data['CharacterID'], user_data['CharacterOwnerHash'])
+        user = db.session.query(User).filter_by(provider_id=provider_id).filter_by(
+            provider_name='eve').first()
+        if not user:
+            # noinspection PyArgumentList
+            user = User.create(commit=False, provider_id=provider_id, provider_name='eve')
+        user.character_id = user_data["CharacterID"]
+        user.character_name = user_data["CharacterName"]
+        user.login()
+        return redirect(url_for(".index"))
+
+    @evesso.tokengetter
+    def get_evesso_oauth_token():
+        return session.get('evesso_token')
 
     @app.route("/logout")
     @login_required

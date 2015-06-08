@@ -3,11 +3,13 @@ require("angular-bootstrap");
 require("restangular");
 
 let app = angular.module('app', [require("angular-ui-router"), 'ui.bootstrap', 'restangular']);
-
 module.exports = app;
 
-//noinspection JSUnresolvedVariable
-
+angular.element(document).ready(function () {
+  angular.bootstrap(document, [app.name], {
+    //strictDi: true
+  });
+});
 require("./services")(app);
 
 app.config(function ($compileProvider, socketProvider) {
