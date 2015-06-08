@@ -6,7 +6,7 @@ from logging.config import fileConfig
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 from flask import current_app
-from backend.database import Base
+from backend.utils.database import Base
 
 config = context.config
 

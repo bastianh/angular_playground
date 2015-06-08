@@ -18,12 +18,9 @@ oauth = OAuth()
 login_manager = LoginManager()
 
 twobad = oauth.remote_app('twobad',
-                          request_token_params={'scope': 'email'},
-                          base_url='https://2bad.co/index.php/oauth/',
+                          request_token_params={'scope': 'skipconfirm'},
                           request_token_url=None,
                           access_token_method='POST',
-                          access_token_url='https://2bad.co/index.php/oauth/token',
-                          authorize_url='https://2bad.co/index.php/oauth/authorize',
                           app_key="TWOBADSSO",
                           )
 

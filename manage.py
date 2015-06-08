@@ -18,7 +18,7 @@ manager.add_command('db', MigrateCommand)
 
 
 @manager.command
-def runTornado(debug=False):
+def run_tornado(debug=False):
     from backend.tornado import create_app
     import tornado
     application = create_app(debug)
@@ -27,6 +27,9 @@ def runTornado(debug=False):
     logger.info("tornado gestartet (debug:%r)", debug)
     tornado.ioloop.IOLoop.instance().start()
 
+@manager.command
+def test():
+    pass
 
 if __name__ == "__main__":
     manager.run()
