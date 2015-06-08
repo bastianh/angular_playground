@@ -1,8 +1,7 @@
-{{ vm.messages }}
 <div class="container" style="padding: 10px">
   <div class="row">
     <div class="col-md-12">
-      <div class="panel panel-primary">
+      <div class="panel panel-primary chat-panel">
         <div class="panel-heading">
           <form ng-submit="vm.submitChat()">
             <div class="input-group">
@@ -17,26 +16,27 @@
         <div class="panel-body">
           <ul class="chat">
 
-            <li ng-repeat="message in vm.messages" class="left clearfix">
+            <li ng-repeat="message in vm.data.messages | orderBy:'-time'" class="left clearfix">
               <span class="chat-img pull-left">
-                            <img width="48" height="48" src="https://image.eveonline.com/Character/{{ message.character_id }}_64.jpg" alt="User Avatar" class="img-circle"/>
+                            <img width="48" height="48"
+                                 src="https://image.eveonline.com/Character/{{ message.character_id }}_64.jpg"
+                                 alt="User Avatar" class="img-circle"/>
                         </span>
 
               <div class="chat-body clearfix">
                 <div class="header">
                   <strong class="primary-font">{{ message.character_name }}</strong>
                   <small class="pull-right text-muted">
-                    <span class="glyphicon glyphicon-time"></span>12 mins ago
+                    <span class="glyphicon glyphicon-time"></span>{{ message.time | date:'medium' }}
                   </small>
                 </div>
                 <p>{{ message.msg }}</p>
               </div>
             </li>
-
           </ul>
         </div>
         <div class="panel-footer">
-
+          Users: <span ng-repeat="(key,user) in vm.data.userlist track by key">{{ user.character_name }}{{$last ? '' : ', '}}</span>
         </div>
       </div>
     </div>

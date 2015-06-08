@@ -4,11 +4,11 @@ import json
 from flask import request
 from flask.ext.classy import FlaskView
 from flask.ext.login import login_required, current_user
+import time
 
 from backend import settings
 from backend.signals import on_init_app
 from backend.utils.redis_ext import redis
-
 
 class ChatView(FlaskView):
     decorators = [login_required]
@@ -20,7 +20,8 @@ class ChatView(FlaskView):
             "msg": data['message'],
             "type": "chat",
             "character_name": current_user.character_name,
-            "character_id": current_user.character_id
+            "character_id": current_user.character_id,
+            "time": int(time.time() * 1000)
         }
         redis.publish('%sbroadcast_channel' % settings.REDIS_CHANNEL_PREFIX, json.dumps(message))
         return ""

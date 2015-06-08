@@ -1,32 +1,46 @@
-<button class='pull-right btn btn-info' ng-click="vm.refreshList()">Reload</button>
+<div class="container" style="padding: 10px">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <button class='pull-right btn btn-info btn-sm' ng-click="vm.refreshList()">Reload</button>
+          <div style="margin-bottom: 0" class="lead clearfix">TODOS</div>
 
-<h2>TODOS</h2>
+        </div>
+        <div class="panel-body" style="padding: 0">
+          <table class="table table-striped" style="margin-bottom: 0">
+            <thead>
+            <tr>
+              <th>Id</th>
+              <th>Task</th>
+              <th class="text-right">Buttons</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="row in vm.todos track by row.id">
+              <td>{{ row.creator.character_name }}</td>
+              <td>{{ row.task }}</td>
+              <td class="text-right">
+                <button class='btn btn-default' ng-click="vm.remove_todo(row)">Remove</button>
+              </td>
+            </tr>
+            </tbody>
+          </table>
 
-<table class="table table-striped">
-  <thead>
-  <tr>
-    <th>Id</th>
-    <th>Task</th>
-    <th class="text-right">Buttons</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr ng-repeat="row in vm.todos track by row.id">
-    <td>{{ row.creator.character_name }}</td>
-    <td>{{ row.task }}</td>
-    <td class="text-right">
-      <button class='btn btn-default' ng-click="vm.remove_todo(row)">Remove</button>
-    </td>
-  </tr>
-  <tr>
-    <td colspan="2">
-      <input ng-model="vm.newtask" placeholder="neuer task..." style="width: 100%" type="text" name="task"/>
-    </td>
-    <td class="text-right">
-      <button class='btn btn-default' ng-click="vm.add_todo()">Add</button>
-    </td>
-  </tr>
-  </tbody>
-</table>
-
+        </div>
+        <div class="panel-footer">
+          <form ng-submit="vm.add_todo()">
+            <div class="input-group">
+              <input id="btn-input" ng-model="vm.newtask" type="text" class="form-control input-sm"
+                     placeholder="Type your task here..."/>
+                        <span class="input-group-btn">
+                            <button class="btn btn-warning btn-sm" id="btn-task">Add</button>
+                        </span>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 

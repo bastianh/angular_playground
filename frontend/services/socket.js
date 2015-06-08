@@ -52,7 +52,6 @@ module.exports = function (ngModule) {
           setStatus('open');
         });
         socket.onmessage = asyncAngularify(socket, function (e) {
-          console.log('message', e.data);
           $rootScope.$emit('socket-message',JSON.parse(e.data));
         });
         socket.onclose = asyncAngularify(socket, function () {
