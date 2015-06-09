@@ -141,7 +141,7 @@ class MessageHandler(sockjs.tornado.SockJSConnection):
             logger.debug("user %r", user)
             self.user_id = user['id']
             self.user = user
-            subscriber.subscribe(['broadcast_channel'], self)
+            subscriber.subscribe(['broadcast_channel', 'user_%d' % self.user_id], self)
             self._enter_leave_notification('enters')
             logger.debug("SUBSCRIBER %r", subscriber.get_subscribers('broadcast_channel'))
 
@@ -161,10 +161,9 @@ class MessageHandler(sockjs.tornado.SockJSConnection):
     def on_close(self):
         if hasattr(self, '_authcheck_timeout'):
             tornado.ioloop.IOLoop.current().remove_timeout(self._authcheck_timeout)
-        # subscriber.unsubscribe('private.{}'.format(self.user_id), self)
-        # subscriber.unsubscribe('broadcast_channel', self)
+
         ## Send the 'user leaves the chat' notification
-        # self._enter_leave_notification('leaves')
+        self._enter_leave_notification('leaves')
         logger.info("disconnected %r", self)
         logger.debug("SUBSCRIBER %r", subscriber.get_subscribers('broadcast_channel'))
         subscriber.unsubscribe_all_channels(self)
