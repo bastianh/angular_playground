@@ -10,9 +10,19 @@ from flask import abort
 db = SQLAlchemy()
 Base = declarative_base()
 
+
 @on_init_app.connect
 def init_app(app):
     db.init_app(app)
+
+
+class AbortMixin(object):
+    @classmethod
+    def get_or_abort(cls, id, code=404, reason=None):
+        obj = db.session.query(cls).get(id)
+        if not obj:
+            abort(code, reason)
+        return obj
 
 
 class BaseOpts(SchemaOpts):
@@ -21,8 +31,10 @@ class BaseOpts(SchemaOpts):
             meta.sqla_session = db.session
         super(BaseOpts, self).__init__(meta)
 
+
 class BaseSchema(ModelSchema):
     OPTIONS_CLASS = BaseOpts
+
 
 class CRUDMixin(object):
     @classmethod
@@ -41,7 +53,7 @@ class CRUDMixin(object):
         return obj
 
     @classmethod
-    def get_or_create(cls,commit=True, create_method_kwargs=None, **kwargs):
+    def get_or_create(cls, commit=True, create_method_kwargs=None, **kwargs):
         try:
             return db.session.query(cls).filter_by(**kwargs).one()
         except NoResultFound:
@@ -98,7 +110,7 @@ class CRUDMixinCached(CRUDMixin):
         # logger.debug("CRUDMixinCached %r:_flush_cache() BUSTED: %r", self.__class__.__name__, self)
         keyid = self.__getattribute__(self.__class__.__mapper__.primary_key[0].name)
         if keyid:  # evtl ist das objekt noch gar nicht gespeichert
-            cachekey = "CRUDCACHE:%s_%s" % ( self.__class__.__name__, keyid)
+            cachekey = "CRUDCACHE:%s_%s" % (self.__class__.__name__, keyid)
             rediscache.delete(cachekey)
 
     @staticmethod

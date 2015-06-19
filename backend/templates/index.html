@@ -1,31 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Document</title>
-  <link href="{{ url_for("static", filename='style.css') }}" rel="stylesheet" type="text/css">
-  <!-- IGB START -->
-  <script src="//cdnjs.cloudflare.com/ajax/libs/es5-shim/3.4.0/es5-shim.js"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/es5-shim/3.4.0/es5-sham.js"></script>
-  <!-- IGB ENDE -->
-  <script src="{{ url_for("static", filename='vendor.bundle.js') }}"></script>
-    {% if user %}
-      <meta property="user" content='{{ user|tojson }}'>
-      <script src="{{ url_for("static", filename='bundle.js') }}"></script>
-    {% endif %}
-</head>
-<body>
-{% if current_user.is_authenticated() %}
+{% extends "layout.html" %}
+
+{% block body %}
   <navbar></navbar>
   <div class="container" ui-view></div>
-{% else %}
-  <div style="width:200px; margin:0 auto;">
-    <a class="btn btn-info" style="width: 100%" href="{{ url_for("twobad_login_redirect", back=request.path) }}" role="button">Login (Alliance)</a>
-  </div>
-  <br/>
-  <div style="width:200px; margin:0 auto;">
-    <a class="btn btn-info" style="width: 100%" href="{{ url_for("evesso_login_redirect", back=request.path) }}" role="button">Login (EVE-SSO)</a>
-  </div>
-{% endif %}
-</body>
-</html>
+{% endblock %}

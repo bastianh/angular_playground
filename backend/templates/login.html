@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+
+{% block body %}
+  <div style="width:200px; margin:0 auto;">
+    <a class="btn btn-info" style="width: 100%" href="{{ url_for("login.twobad_login_redirect", back=request.path) }}"
+       role="button">Login (Alliance)</a>
+  </div>
+  <br/>
+  <div style="width:200px; margin:0 auto;">
+    <a class="btn btn-info" style="width: 100%" href="{{ url_for("login.evesso_login_redirect", back=request.path) }}"
+       role="button">Login (EVE-SSO)</a>
+  </div>
+{% endblock %}

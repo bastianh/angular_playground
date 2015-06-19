@@ -1,5 +1,4 @@
-import random
-from flask import session, url_for, request, jsonify, redirect, render_template
+from flask import session, url_for, request, jsonify, redirect, render_template, Blueprint
 from flask.ext.login import LoginManager, login_required, current_user
 
 from flask.ext.oauthlib.client import OAuth, OAuthException
@@ -37,97 +36,94 @@ def load_user(userid):
 def get_twobad_oauth_token():
     return session.get('twobad_token')
 
+@evesso.tokengetter
+def get_evesso_oauth_token():
+    return session.get('evesso_token')
+
+bp = Blueprint('login', __name__, url_prefix="/login")
 
 @on_init_app.connect
 def init_app(app):
     oauth.init_app(app)
     login_manager.init_app(app)
 
-    @app.route("/test")
-    def test():
-        u = User.create(commit=False, provider_id=random.random()*1000, provider_name='test')
-        u.character_id=random.random()*1000
-        u.character_name="asd"
-        u.save()
-        return "ji"
+    app.register_blueprint(bp)
+    app.add_url_rule('/', 'index', index)
 
-    @app.route("/")
-    def index():
-        user = None
-        if current_user.is_authenticated():
-            user = UserSchema(only=('character_id', 'character_name', 'id')).dump(current_user).data
-            user = sign_dict(user, settings.SECRET_KEY)
-        return render_template("index.html", user=user)
+def index():
 
-    @app.route('/login/twobad')
-    def twobad_login_redirect():
-        return twobad.authorize(callback=url_for('authorized', _external=True))
+    if current_user.is_authenticated():
+        user = UserSchema(only=('character_id', 'character_name', 'id')).dump(current_user).data
+        user = sign_dict(user, settings.SECRET_KEY)
+        render_template("index.html", user=user)
 
-    @app.route('/login/authorized')
-    def authorized():
-        resp = twobad.authorized_response()
-        if resp is None:
-            return 'Access denied: reason=%s error=%s' % (
-                request.args['error'],
-                request.args['error_description']
-            )
-        if isinstance(resp, OAuthException):
-            return 'Access denied: %r' % resp
-        session['twobad_token'] = (resp['access_token'], '')
-        me = twobad.get('me')
-        if me.data["success"]:
-            user_data = me.data["user"]
-            user = db.session.query(User).filter_by(provider_id=user_data['user_id']).filter_by(
-                provider_name='2bad').first()
-            if not user:
-                # noinspection PyArgumentList
-                user = User.create(commit=False, provider_id=user_data['user_id'], provider_name='2bad')
-            user.character_id = user_data["character_id"]
-            user.character_name = user_data["username"]
-            user.save()
-            user.login()
-            return redirect(url_for(".index"))
-        return jsonify(me.data)
+    return render_template("login.html")
 
-    @app.route("/login/evesso")
-    def evesso_login_redirect():
-        return evesso.authorize(callback=url_for('evesso_authorized', _external=True, _scheme="https"))
+@bp.route('/login/twobad')
+def twobad_login_redirect():
+    return twobad.authorize(callback=url_for('.authorized', _external=True))
 
-    @app.route('/login/callback/eve')
-    def evesso_authorized():
-        resp = evesso.authorized_response()
-        if resp is None:
-            return 'Access denied: reason=%s error=%s' % (
-                request.args['error_reason'],
-                request.args['error_description']
-            )
-        if isinstance(resp, Exception):
-            return 'Access denied: error=%s' % str(resp)
-
-        session['evesso_token'] = (resp['access_token'], '')
-
-        me = evesso.get("verify")
-        user_data = me.data
-
-        provider_id = int(user_data['CharacterID']) #  FIXME: TODO: sollte kein int sein  "%r%r" % (user_data['CharacterID'], user_data['CharacterOwnerHash'])
-        user = db.session.query(User).filter_by(provider_id=provider_id).filter_by(
-            provider_name='eve').first()
+@bp.route('/login/authorized')
+def authorized():
+    resp = twobad.authorized_response()
+    if resp is None:
+        return 'Access denied: reason=%s error=%s' % (
+            request.args['error'],
+            request.args['error_description']
+        )
+    if isinstance(resp, OAuthException):
+        return 'Access denied: %r' % resp
+    session['twobad_token'] = (resp['access_token'], '')
+    me = twobad.get('me')
+    if me.data["success"]:
+        user_data = me.data["user"]
+        user = db.session.query(User).filter_by(provider_id=user_data['user_id']).filter_by(
+            provider_name='2bad').first()
         if not user:
             # noinspection PyArgumentList
-            user = User.create(commit=False, provider_id=provider_id, provider_name='eve')
-        user.character_id = user_data["CharacterID"]
-        user.character_name = user_data["CharacterName"]
+            user = User.create(commit=False, provider_id=user_data['user_id'], provider_name='2bad')
+        user.character_id = user_data["character_id"]
+        user.character_name = user_data["username"]
         user.save()
         user.login()
         return redirect(url_for(".index"))
+    return jsonify(me.data)
 
-    @evesso.tokengetter
-    def get_evesso_oauth_token():
-        return session.get('evesso_token')
+@bp.route("/login/evesso")
+def evesso_login_redirect():
+    return evesso.authorize(callback=url_for('.evesso_authorized', _external=True, _scheme="https"))
 
-    @app.route("/logout")
-    @login_required
-    def logout():
-        session.clear()
-        current_user.logout()
-        return redirect(url_for("index"))
+@bp.route('/login/callback/eve')
+def evesso_authorized():
+    resp = evesso.authorized_response()
+    if resp is None:
+        return 'Access denied: reason=%s error=%s' % (
+            request.args['error_reason'],
+            request.args['error_description']
+        )
+    if isinstance(resp, Exception):
+        return 'Access denied: error=%s' % str(resp)
+
+    session['evesso_token'] = (resp['access_token'], '')
+
+    me = evesso.get("verify")
+    user_data = me.data
+
+    provider_id = int(user_data['CharacterID'])  # FIXME: TODO: sollte kein int sein  "%r%r" % (user_data['CharacterID'], user_data['CharacterOwnerHash'])
+    user = db.session.query(User).filter_by(provider_id=provider_id).filter_by(
+        provider_name='eve').first()
+    if not user:
+        # noinspection PyArgumentList
+        user = User.create(commit=False, provider_id=provider_id, provider_name='eve')
+    user.character_id = user_data["CharacterID"]
+    user.character_name = user_data["CharacterName"]
+    user.save()
+    user.login()
+    return redirect(url_for(".index"))
+
+@bp.route("/logout")
+@login_required
+def logout():
+    session.clear()
+    current_user.logout()
+    return redirect(url_for(".index"))

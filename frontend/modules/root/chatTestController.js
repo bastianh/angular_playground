@@ -1,3 +1,4 @@
+
 module.exports = function (ngModule) {
   ngModule.controller('chatTestController', function (chatService) {
     let vm = this;
@@ -9,7 +10,7 @@ module.exports = function (ngModule) {
         chatService.sendMessage(vm.chatInput);
         vm.chatInput = "";
       }
-    }
+    };
 
   });
 };

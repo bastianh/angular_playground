@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <link href="{{ url_for(".static", filename='style.css') }}" rel="stylesheet" type="text/css">
+  <!-- IGB START -->
+  <script src="//cdnjs.cloudflare.com/ajax/libs/es5-shim/3.4.0/es5-shim.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/es5-shim/3.4.0/es5-sham.js"></script>
+  <!-- IGB ENDE -->
+  <script src="{{ url_for("static", filename='vendor.bundle.js') }}"></script>
+    {% if user %}
+      <meta property="user" content='{{ user|tojson }}'>
+      <script src="{{ url_for(".static", filename='bundle.js') }}"></script>
+    {% endif %}
+</head>
+<body>
+{% block body %}{% endblock %}
+</body>
+</html>

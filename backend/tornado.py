@@ -176,4 +176,9 @@ def create_app(debug=False):
         sockjs.tornado.SockJSRouter(MessageHandler, '/sockjs').urls,
         autoreload=debug, compiled_template_cache=debug,
         serve_traceback=debug)
+    if settings.SENTRY_TORNADO:
+        from raven.contrib.tornado import AsyncSentryClient
+        application.sentry_client = AsyncSentryClient(
+            settings.SENTRY_TORNADO
+        )
     return application
