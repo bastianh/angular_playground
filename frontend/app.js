@@ -13,12 +13,11 @@ angular.element(document).ready(function () {
 require("./services")(app);
 
 app.config(function ($compileProvider, socketProvider) {
+  socketProvider.setUrl(window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + '/sockjs').setReconnect(5000);
   if (__DEV__) {
     // performance schub ;)
-    socketProvider.setUrl(window.location.protocol+'//'+window.location.hostname+'/sockjs').setReconnect(5000);
     $compileProvider.debugInfoEnabled(false);
   } else {
-    socketProvider.setUrl(window.location.protocol+'//'+window.location.hostname+':9999/sockjs').setReconnect(5000);
     console.warn("Development Mode!");
   }
 });

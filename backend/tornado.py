@@ -26,7 +26,7 @@ except:
 
 
 # Use the synchronous redis client to publish messages to a channel
-redis_client = redis.Redis()
+redis_client = redis.Redis.from_url(url=settings.REDIS_URL)
 # Create the tornadoredis.Client instance
 # and use it for redis channel subscriptions
 
@@ -69,7 +69,7 @@ class MySubscriber(tornadoredis.pubsub.SockJSSubscriber):
         super().close()
 
 
-subscriber = MySubscriber(tornadoredis.Client())
+subscriber = MySubscriber(tornadoredis.Client(host=settings.REDIS_HOST))
 
 
 class IndexPageHandler(tornado.web.RequestHandler):
@@ -181,4 +181,8 @@ def create_app(debug=False):
         application.sentry_client = AsyncSentryClient(
             settings.SENTRY_TORNADO
         )
-    return application
+    http_server = tornado.httpserver.HTTPServer(application)
+    http_server.listen(9999)
+    logger.info("tornado gestartet (debug:%r)", debug)
+    tornado.ioloop.IOLoop.instance().start()
+

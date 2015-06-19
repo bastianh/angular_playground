@@ -51,19 +51,17 @@ def init_app(app):
     app.add_url_rule('/', 'index', index)
 
 def index():
-
     if current_user.is_authenticated():
         user = UserSchema(only=('character_id', 'character_name', 'id')).dump(current_user).data
         user = sign_dict(user, settings.SECRET_KEY)
-        render_template("index.html", user=user)
-
+        return render_template("index.html", user=user)
     return render_template("login.html")
 
-@bp.route('/login/twobad')
+@bp.route('/twobad')
 def twobad_login_redirect():
     return twobad.authorize(callback=url_for('.authorized', _external=True))
 
-@bp.route('/login/authorized')
+@bp.route('/authorized')
 def authorized():
     resp = twobad.authorized_response()
     if resp is None:
@@ -86,14 +84,14 @@ def authorized():
         user.character_name = user_data["username"]
         user.save()
         user.login()
-        return redirect(url_for(".index"))
+        return redirect(url_for("index"))
     return jsonify(me.data)
 
-@bp.route("/login/evesso")
+@bp.route("/evesso")
 def evesso_login_redirect():
     return evesso.authorize(callback=url_for('.evesso_authorized', _external=True, _scheme="https"))
 
-@bp.route('/login/callback/eve')
+@bp.route('/callback/eve')
 def evesso_authorized():
     resp = evesso.authorized_response()
     if resp is None:
@@ -119,11 +117,11 @@ def evesso_authorized():
     user.character_name = user_data["CharacterName"]
     user.save()
     user.login()
-    return redirect(url_for(".index"))
+    return redirect(url_for("index"))
 
 @bp.route("/logout")
 @login_required
 def logout():
     session.clear()
     current_user.logout()
-    return redirect(url_for(".index"))
+    return redirect(url_for("index"))

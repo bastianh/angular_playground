@@ -20,12 +20,8 @@ manager.add_command('db', MigrateCommand)
 @manager.command
 def run_tornado(debug=False):
     from backend.tornado import create_app
-    import tornado
-    application = create_app(debug)
-    http_server = tornado.httpserver.HTTPServer(application)
-    http_server.listen(9999)
-    logger.info("tornado gestartet (debug:%r)", debug)
-    tornado.ioloop.IOLoop.instance().start()
+    create_app(debug)
+
 
 @manager.command
 def test():
