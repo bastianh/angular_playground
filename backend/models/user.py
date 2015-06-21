@@ -1,9 +1,8 @@
 from datetime import datetime
 import uuid
-from sqlalchemy import Column, Integer, String, DateTime, Index
+from sqlalchemy import Column, Integer, String, DateTime, Index, Boolean
 
 from flask import session
-
 from flask.ext.login import UserMixin, login_user, logout_user
 from sqlalchemy.dialects import postgres
 from sqlalchemy_utils import Timestamp
@@ -15,16 +14,21 @@ class User(Base, CRUDMixinCached, Timestamp, UserMixin):
     """
     Usermodel
     """
-    __tablename__ = "prx_user"
+    __tablename__ = "app_user"
 
     id = Column(postgres.UUID(as_uuid=False), default=lambda: str(uuid.uuid4()), primary_key=True)
-    provider_id = Column(Integer, nullable=False)
+    provider_id = Column(String, nullable=False)
     provider_name = Column(String, nullable=False)
     character_id = Column(Integer, unique=True, nullable=False)  #: eve character id
     character_name = Column(String, nullable=False)  #: eve character name
+    corp_id = Column(Integer)
+    corp_name = Column(String)
+    alliance_id = Column(Integer)
+    alliance_name = Column(String)
     last_login = Column(DateTime)
+    info_update = Column(DateTime)
     email = Column(String)
-
+    admin = Column(Boolean, nullable=False, server_default='0')
     __table_args__ = (Index('provider', 'provider_id', 'provider_name', unique=True),)
 
     def login(self, remember=False):

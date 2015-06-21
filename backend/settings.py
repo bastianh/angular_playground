@@ -1,5 +1,17 @@
 import os
 
+# application settings
+
+LOAD_MODULES = [
+    "backend.utils.ext",
+    "backend.utils.flask_helper",
+    "backend.utils.eveapi",
+    "backend.modules",
+    "backend.modules.admin.views"
+]
+
+# database / services
+
 REDIS_HOST = os.environ.get('REDIS_PORT_6379_TCP_ADDR', '127.0.0.1')
 REDIS_URL = "redis://{host}/0".format(host=REDIS_HOST)
 
@@ -8,8 +20,15 @@ REDIS_CHANNEL_PREFIX = 'anpl_'
 SQLALCHEMY_DATABASE_URI = "postgresql://postgres:postgres@{host}/backend".format(
     host=os.environ.get('POSTGRES_PORT_5432_TCP_ADDR', '127.0.0.1'))
 
+# sentry error reporting
+
 SENTRY_TORNADO = None
 SENTRY_DSN = None
+
+# celery settings
+
+BROKER_URL = REDIS_URL
+CELERY_ACCEPT_CONTENT = ['pickle', 'json', 'msgpack', 'yaml']
 
 try:
     from backend.local_settings import *

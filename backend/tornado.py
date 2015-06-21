@@ -141,7 +141,7 @@ class MessageHandler(sockjs.tornado.SockJSConnection):
             logger.debug("user %r", user)
             self.user_id = user['id']
             self.user = user
-            subscriber.subscribe(['broadcast_channel', 'user_%s' % self.user_id], self)
+            subscriber.subscribe(['broadcast_channel', 'u|%s' % self.user_id], self)
             self._enter_leave_notification('enters')
             logger.debug("SUBSCRIBER %r", subscriber.get_subscribers('broadcast_channel'))
 

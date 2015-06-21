@@ -51,12 +51,12 @@ module.exports = {
   devServer: {
     contentBase: "static/",
     noInfo: false,
-    //host: "192.168.33.12",
+    host: "0.0.0.0",
     //hot: true,
     //inline: true,
     proxy: {
-      "/sockjs/*": "http://192.168.149.144:9999/",
-      "*": "http://192.168.149.144:5000/"
+      "/sockjs/*": "http://127.0.0.1:9999/",
+      "*": "http://127.0.0.1:5000/"
     }
   }
 };

@@ -10,4 +10,27 @@
     <a class="btn btn-info" style="width: 100%" href="{{ url_for("login.evesso_login_redirect", back=request.path) }}"
        role="button">Login (EVE-SSO)</a>
   </div>
+    {% if form %}
+      <br/>
+      <div style="width:200px; margin:0 auto;">
+        <form method="post" action="{{ url_for("login.debug_login") }}">
+          <div class="input-group{% if form.character.errors %} has-error{% endif %}">
+              {{ form.character(class='form-control input-sm') }}
+                        <span class="input-group-btn">
+                            <button
+                              class="btn btn-sm{% if form.character.errors %} btn-danger{% else %} btn-success{% endif %}"
+                              id="btn-chat">Login
+                            </button>
+                        </span>
+          </div>
+            {% if form.character.errors %}
+              {% for error in form.character.errors %}
+                <br/>
+                <div class="alert alert-danger text-center" role="alert">{{ error }}</div>
+              {% endfor %}
+            {% endif %}
+        </form>
+      </div>
+
+    {% endif %}
 {% endblock %}
