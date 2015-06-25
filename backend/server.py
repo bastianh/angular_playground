@@ -30,3 +30,15 @@ def create_debug_app():
     # noinspection PyUnresolvedReferences
     app = werkzeug.DebuggedApplication(app, evalex=True)
     return app
+
+def create_maintain_app():
+    app = Flask(__name__)
+    app.config.from_object(settings)
+
+    @app.route("/")
+    def hello_world():
+        import xmlrpc.client
+        proxy = xmlrpc.client.ServerProxy("http://localhost:9001/RPC2")
+        return str(proxy.supervisor.getAllConfigInfo())
+
+    return app

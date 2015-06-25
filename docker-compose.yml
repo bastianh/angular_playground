@@ -1,14 +1,19 @@
 web:
   build: .
   ports:
-   - "5000:5000"
-   - "9999:9999"
+    - "5000:5000"
+    - "5001:5001"
+    - "9999:9999"
   volumes:
-   - .:/code
+    - .:/code
   links:
-   - redis
-   - postgres
+    - redis
+    - postgres
+  environment:
+    - POSTGRES_HOST=postgres
+
 redis:
   image: redis
+
 postgres:
   image: postgres
