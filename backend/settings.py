@@ -10,6 +10,8 @@ LOAD_MODULES = [
     "backend.modules.admin.views"
 ]
 
+SECRET_KEY = "CHANGE_ME"
+
 # database / services
 
 REDIS_HOST = os.environ.get('REDIS_PORT_6379_TCP_ADDR', '127.0.0.1')
