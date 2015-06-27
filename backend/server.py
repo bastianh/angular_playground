@@ -1,9 +1,11 @@
 from flask import Flask, url_for
+from flask.ext.admin import Admin
 from werkzeug import import_string
 # noinspection PyUnresolvedReferences
 from flask.ext.login import current_user
 
 from backend import settings
+from backend.modules.maintain.views import Supervisor
 from backend.signals import on_init_app
 
 
@@ -36,12 +38,10 @@ def create_maintain_app():
     app = Flask(__name__)
     app.config.from_object(settings)
     app.config['APPLICATION_ROOT'] = "/_mt"
+    app.debug=True
 
-    @app.route("/")
-    def hello_world():
-        import xmlrpc.client
-        proxy = xmlrpc.client.ServerProxy("http://localhost:9001/RPC2")
-        return str(proxy.supervisor.getAllConfigInfo())
+    admin = Admin(app=app, url="/", template_mode='bootstrap3')
+    admin.add_view(Supervisor(name='Supervisor'))
 
     app = DispatcherMiddleware(app,{ "/_mt" : app})
     return app

@@ -69,8 +69,7 @@ class MyHomeView(AdminIndexView, MyBaseView):
 
 @on_init_app.connect
 def init_app(app):
-    admin = Admin(index_view=MyHomeView(), template_mode='bootstrap2')
-    admin.init_app(app)
+    admin = Admin(app=app,index_view=MyHomeView(), template_mode='bootstrap2')
     admin.add_view(MyView(name='Hello'))
     admin.add_view(Database(name='Database'))
     admin.add_view(UserView(User, db.session, category="Models"))

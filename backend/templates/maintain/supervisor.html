@@ -1,0 +1,35 @@
+{% extends 'admin/master.html' %}
+{% block body %}
+
+  <table class="table table-bordered table-condensed">
+    <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th>State</th>
+      <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for row in data %}
+      <tr>
+        <td>{{ row.name }}</td>
+        <td>
+          <pre style="margin:0;padding:1px 5px">{{ row.description }}</pre>
+        </td>
+        <td>{{ row.statename }}</td>
+        <td>
+            {%- if row.state == 0 or row.state == 200 -%}
+              <a class="btn btn-success btn-xs"
+                 href="{{ url_for(".change_status", name=row.name, status=1) }}">Start</a>
+            {%- elif row.state == 20 -%}
+              <a class="btn btn-warning btn-xs"
+                 href="{{ url_for(".change_status", name=row.name, status=-1) }}">Stop</a>
+            {%- endif -%}
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+
+{% endblock %}
