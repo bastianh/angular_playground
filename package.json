@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node node_modules/.bin/webpack-dev-server --hot --inline",
+    "start_bak": "node node_modules/.bin/webpack-dev-server --hot --inline",
+    "start": "node_modules/.bin/webpack -w",
     "build": "NODE_ENV=production node_modules/.bin/webpack -p"
   },
   "author": "",

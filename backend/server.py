@@ -33,17 +33,13 @@ def create_debug_app():
     app = werkzeug.DebuggedApplication(app, evalex=True)
     return app
 
-
 def create_maintain_app():
-    from werkzeug.wsgi import DispatcherMiddleware
 
     app = Flask(__name__)
     app.config.from_object(settings)
-    app.config['APPLICATION_ROOT'] = "/_mt"
     app.debug = True
 
     admin = Admin(app=app, url="/", template_mode='bootstrap3')
     admin.add_view(Supervisor(name='Supervisor'))
 
-    app = DispatcherMiddleware(app, {"/_mt": app})
     return app
