@@ -1,18 +1,32 @@
-import os
+from contextlib import contextmanager
 import logging
+import os
 from urllib.parse import urlsplit
-
+from alembic import command
+from alembic.config import Config
 from flask import current_app
-from flask.ext.admin import BaseView, expose
+from flask.ext.admin import expose
 from flask.ext.migrate import Migrate
 from psycopg2 import connect
-from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
-from six import StringIO
 
+from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
+
+from six import StringIO
 from backend.utils.database import db
+from maintain.modules.baseclass import MaintainBaseView
 from maintain.signals import get_admin_modules
-from alembic.config import Config
-from alembic import command
+
+
+@contextmanager
+def dbcon():
+    url = urlsplit(current_app.config['SQLALCHEMY_DATABASE_URI'])
+    user, host = url[1].split("@")
+    user, password = user.split(":")
+    con = connect(user=user, host=host, password=password)
+    try:
+        yield con
+    finally:
+        con.close()
 
 
 @get_admin_modules.connect
@@ -20,16 +34,7 @@ def init_app(app):
     return Database(name='Database'), 90
 
 
-class Database(BaseView):
-    def is_accessible(self):
-        return True
-
-    def get_database_connection(self):
-        url = urlsplit(current_app.config['SQLALCHEMY_DATABASE_URI'])
-        user, host = url[1].split("@")
-        user, password = user.split(":")
-        return connect(user=user, host=host, password=password)
-
+class Database(MaintainBaseView):
     @expose("/")
     def index(self):
         return self.render('database/index.html')
@@ -62,11 +67,9 @@ class Database(BaseView):
     def createdb(self):
         url = urlsplit(current_app.config['SQLALCHEMY_DATABASE_URI'])
         dbname = url[2][1:]
-        con = self.get_database_connection()
-        con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
-        cur = con.cursor()
-        cur.execute('CREATE DATABASE "%s"' % dbname)
-        cur.close()
-        con.close()
+        with dbcon() as con:
+            con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+            with con.cursor() as cur:
+                cur.execute('CREATE DATABASE "%s"' % dbname)
 
         return str(url)

@@ -1,0 +1,14 @@
+{% extends "admin/index.html" %}
+
+{% block body %}
+{{ request.endpoint }}
+  <form method="POST" action="{{ url_for("admin.index") }}">
+    <div>{{ form.code.label }}: {{ form.code() }}</div>
+  </form>
+
+  {{ form }}
+  {% for key,value in config.items() %}
+    <br>{{ key }}: {{ value }}
+  {% endfor %}
+
+{% endblock %}

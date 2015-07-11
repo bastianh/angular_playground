@@ -14,6 +14,8 @@ LOAD_MODULES = [
 
 SECRET_KEY = None
 
+CONFIG_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)),"config.ini")
+
 # database / services
 
 REDIS_HOST = os.environ.get('REDIS_PORT_6379_TCP_ADDR', '127.0.0.1')

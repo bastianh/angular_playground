@@ -1,8 +1,9 @@
 import xmlrpc.client
 
 from flask import request, abort, redirect, url_for
-from flask.ext.admin import BaseView, expose
+from flask.ext.admin import expose
 
+from maintain.modules.baseclass import MaintainBaseView
 from maintain.signals import get_admin_modules
 
 
@@ -11,9 +12,7 @@ def init_app(app):
     return Supervisor(name='Supervisor'), 100
 
 
-class Supervisor(BaseView):
-    def is_accessible(self):
-        return False
+class Supervisor(MaintainBaseView):
 
     @property
     def proxy(self):
