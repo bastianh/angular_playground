@@ -1,5 +1,7 @@
 import os
 
+DEBUG = os.environ.get('DEBUG_APP', False)
+
 # application settings
 
 LOAD_MODULES = [

@@ -1,6 +1,14 @@
 import xmlrpc.client
+
 from flask import request, abort, redirect, url_for
 from flask.ext.admin import BaseView, expose
+
+from maintain.signals import get_admin_modules
+
+
+@get_admin_modules.connect
+def init_app(app):
+    return Supervisor(name='Supervisor'), 100
 
 
 class Supervisor(BaseView):
