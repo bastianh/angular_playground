@@ -12,7 +12,7 @@ LOAD_MODULES = [
     "backend.modules.admin.views"
 ]
 
-SECRET_KEY = "CHANGE_ME"
+SECRET_KEY = None
 
 # database / services
 

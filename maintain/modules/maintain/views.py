@@ -13,7 +13,7 @@ def init_app(app):
 
 class Supervisor(BaseView):
     def is_accessible(self):
-        return True
+        return False
 
     @property
     def proxy(self):
