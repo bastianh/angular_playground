@@ -1,9 +1,10 @@
+import configparser
 import json
 import time
 import logging
 
 import jws
-
+from tornado import options
 import tornado.httpserver
 import tornado.web
 import tornado.websocket
@@ -23,7 +24,6 @@ try:
 except:
     print('Please install the sockjs-tornado package to run this demo.')
     exit(1)
-
 
 # Use the synchronous redis client to publish messages to a channel
 redis_client = redis.Redis.from_url(url=settings.REDIS_URL)
@@ -133,7 +133,7 @@ class MessageHandler(sockjs.tornado.SockJSConnection):
                 return
             user = message['user']
             try:
-                user = check_dict(user, settings.SECRET_KEY)
+                user = check_dict(user, options.secret_key)
             except jws.exceptions.SignatureError as e:
                 self.close()
                 logging.warning("signatur error %r %r", e, user)
@@ -170,6 +170,7 @@ class MessageHandler(sockjs.tornado.SockJSConnection):
 
 
 def create_app(debug=False):
+    global config
     application = tornado.web.Application(
         [(r'/', IndexPageHandler),
          (r'/send_message', SendMessageHandler)] +
@@ -181,6 +182,10 @@ def create_app(debug=False):
         application.sentry_client = AsyncSentryClient(
             settings.SENTRY_TORNADO
         )
+
+    config = configparser.ConfigParser()
+    config.read(settings.CONFIG_FILE)
+    options.secret_key = config['flask']['SECRET_KEY']
     http_server = tornado.httpserver.HTTPServer(application)
     http_server.listen(9999)
     logger.info("tornado gestartet (debug:%r)", debug)

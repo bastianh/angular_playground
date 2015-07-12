@@ -15,10 +15,11 @@ class INIConfig(SafeConfigParser):
     def init_app(self, app):
         app.config.from_inifile = self.from_inifile
 
-    def from_inifile(self, path, app=None):
+    def from_inifile(self, path, app=None, config=None):
+        print("XXXX %r", config)
         if app:
             config = app.config
-        else:
+        if not config:
             config = current_app.config
         self.read(path)
         for section in self.sections():

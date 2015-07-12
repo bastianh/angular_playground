@@ -19,7 +19,7 @@ def init_app(app):
 def index():
     if current_user.is_authenticated():
         user = UserSchema(only=('character_id', 'character_name', 'id')).dump(current_user).data
-        user = sign_dict(user, settings.SECRET_KEY)
+        user = sign_dict(user, current_app.config["SECRET_KEY"])
         return render_template("index.html", user=user)
     form = None
     if current_app.debug:
